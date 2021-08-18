@@ -1,0 +1,103 @@
+---
+title: "Introduction to R"
+author: "Anna Moeller"
+date: "8/5/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction 
+
+## What is R? 
+- R is a coding language and the software that interprets scripts written in that language. 
+- RStudio is a popular way to work in R - you can write scripts, save them, access your files easily, run code, and see results. 
+- You will need both [R](https://cran.r-project.org/bin/windows/base/) and [RStudio](https://www.rstudio.com/products/rstudio/download/) installed.
+
+## What can R do? 
+- R was developed to code statistical analyses (in that way, it can be thought of as a replacement for SAS, SPSS, etc.)
+- Data management - organizing, fixing and finding errors (in that way, it can replace Excel)
+- High-quality graphics (also a replacement for Excel)
+- GIS - create maps, visualize spatial data (replacement for ArcGIS)
+- Reports with plots embedded. 
+
+## Why learn R? 
+- marketable skill in our field. 
+- will use it through graduate degree/classes 
+- When you write code, you have a complete record of every step you took, in order. Your computer can crash and lose all your results, but if you have a copy of the script you wrote, you can recreate it all. Also, as you collect more data, you can run the same script and immediately update all your results. 
+- Makes analyses repeatable - repeat analyses from publications, share code with others
+- People have already solved many problems specific to our field. You can download code or a package of functions to solve specific problems. e.g., spaceNtime package to run STE, adehabitatHR to calculate home ranges, amt to analyze animal movement, unmarked to estimate occupancy. 
+
+## R community and resources
+- many issues solved online - code available by Googling
+- Stack Overflow 
+- Cheat Sheets (Google or Help > Cheat Sheets)
+- Google error messages 
+- ?<function-name> like ?lm or ?mean
+
+## Resassurances
+- This class is designed to help students get comfortable with R
+- It's a new language, but you only need enough to understand one analysis before biting off the next goal
+ 
+# Understanding RStudio
+- A script is a file you save that contains the commands to do some analysis along with any comments you want to make (comment using #). The goal with a script is to have a neat, step-by-step way to run an analysis that you can repeat anytime you want. 
+- The console runs commands in the R language and returns results. 
+- The other 2 panes allow you access to other things, like your files, viewing plots, etc. 
+- R and RStudio are self-contained, so unless you tell R to save a file to your computer, nothing you do will change anything on your computer, and everything will disappear when you close R. This is a good thing. You can play around without messing anything up in your original file. 
+
+# Getting started
+## Fix defaults 
+- Tools > Global options
+   - uncheck "Restore .RData into workspace at setup" 
+   - set "Save workspace to .RData on exit" to Never. 
+
+## Try out some code 
+- Start a new script: File > New File > R Script
+- Write some code directly in the console:
+```{r eval = F}
+2 + 4 - (7+3) / 12
+```
+- Write the same code in your script and run it on the console by pressing Ctrl + Enter (PC) or Cmd + Enter (Mac)
+
+# Object-oriented programming
+- Everything in R is an *object*
+- Every object has a *class* 
+- The class of an object determines how code behaves on that object 
+
+For example: `plot()` is an object with the class *function*. Functions do an action and create an output (in this case, a plot) when you put something inside the parentheses. If you run `plot()` on categorical data (class factor), it will create a boxplot. If you run it on continuous data (class numeric), it will create a scatterplot. 
+
+
+# Research question
+ - lm: researcher's Q was: what is the relationship between x and y?
+
+# Start a project (?) 
+
+# Reading in data
+
+Penguin dataset https://oceaninformatics.ucsd.edu/datazoo/catalogs/pallter/datasets/220
+
+```{r}
+peng <- read.csv("data/penguins_clean.csv")
+head()
+plot(iris$Species, iris$Sepal.Length)
+```
+
+
+
+
+# Creating a script, running stuff 
+
+
+
+# Creating a project and directory structure
+
+# Exploring data 
+
+# Creating a Markdown document 
+## Cheat sheet 
+
+# To turn in 
+## Markdown... reading in data file
+## Data summaries: print first 10 rows, number of columns 
