@@ -1,0 +1,43 @@
+---
+title: "Assignment 1"
+author: "J. Doe"
+date: "8/18/2021"
+output: html_document
+---
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+You can embed an R code chunk like this:
+```{r}
+head(cars)
+```
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. Try it now!
+
+## Assignment 
+
+1. In the header, change the name of the author to your name and update the date to today's date. 
+
+2. Load your penguin data
+```{r}
+
+```
+
+3. Display the first 6 lines of your data using the function `head()`
+```{r}
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
