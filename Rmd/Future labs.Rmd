@@ -1,0 +1,28 @@
+---
+title: "Future notes"
+author: "Anna Moeller"
+date: "8/24/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# In lab 3, have them create their own markdown document. 
+
+
+List of all the base R functions 
+library(help = "base")
+starting at abbreviate
+
+# Research question
+ - lm: researcher's Q was: what is the relationship between x and y?
+
+
+# Object-oriented programming 
+- Everything in R is an *object* 
+- Every object has a *class* 
+- The class of an object determines how code behaves on that object 
+
+For example: `plot()` is an object with the class *function*. Functions do an action and create an output (in this case, a plot) when you put something inside the parentheses. If you run `plot()` on categorical data (class: factor), it will create a boxplot. If you run it on continuous data (class: numeric), it will create a scatterplot. 

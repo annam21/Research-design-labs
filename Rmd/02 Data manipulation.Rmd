@@ -1,0 +1,43 @@
+---
+title: "Data manipulation"
+author: "WILD 541"
+date: "9/15/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Getting started 
+
+We will be using functions from the `tidyverse` suite of packages, which are designed for data manipulation. `tidyverse` is an *umbrella package* or a package of packages. When you install it, you will see on the console all the packages it contains as it downloads. 
+
+```{r, eval = F}
+install.packages("tidyverse")
+```
+
+To use the package 
+```{r}
+library(tidyverse)
+library(here)
+```
+
+# Read in data 
+```{r}
+penguin <- read_csv(here("data/penguins_raw.csv"))
+```
+
+# Wide vs. long data 
+```{r}
+
+```
+
+# Save your output 
+write_csv()
+
+# Glossary 
+
+- long data: data set up where each row contains one observation 
+- tidyverse: an R package that is built for data manipulation
+- wide data: data set up where columns contain multiple observations 
