@@ -1,6 +1,6 @@
 library(tidyverse)
-library(gapminder)
 
+# library(gapminder)
 # write_csv(gapminder, "data/gapminder.csv")
 
 # Clean Penguins for class
@@ -16,8 +16,9 @@ peng2 <- peng %>%
          body_mass_g = "Body Mass (g)"
         ) %>% 
   select(-`Delta 15 N (o/oo)`, -`Delta 13 C (o/oo)`) %>% 
-  drop_na() # Loses A TON of rows 
-
+  drop_na() %>% # Loses A TON of rows 
+  filter(Sex != ".")
+  
 # Plot the data
 ggplot(peng2) + 
   geom_point(aes(x = body_mass_g, y = flipper_length_mm, color = Species))
@@ -27,3 +28,4 @@ write_csv(peng2, "data/penguins_clean.csv")
 # Test it 
 read_csv( "data/penguins_clean.csv")
 read.csv( "data/penguins_clean.csv")
+

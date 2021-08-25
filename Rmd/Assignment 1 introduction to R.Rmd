@@ -1,0 +1,48 @@
+---
+title: "Assignment 1"
+author: "WILD 541"
+date: "9/1/2021"
+output: html_document
+---
+
+# Fix defaults 
+- To develop good habits and code hygiene, let's fix two defaults in RStudio. 
+- Go to `Tools` then `Global options`
+   - uncheck "Restore .RData into workspace at setup" 
+   - set "Save workspace to .RData on exit" to Never. 
+   
+# 1. Create an RStudio Project 
+
+It is a good idea to keep related sets of data, scripts, and results in a self-contained folder. A good way to do that is through RStudio Projects. Create an RStudio Project following these steps: 
+
+1. Navigate to `File > New Project > New Directory > New Project`
+2. Enter a name for your new folder and choose a convenient place for it. Name it something like `research-design`. 
+3. Click `Create Project`. Notice that your project name now shows in the top right corner of RStudio. 
+
+# 2. Create directories and sub-directories
+
+In your File Explorer or Finder, navigate to your newly created Project folder, and add sub-folders, including `data`, `R`, `figures`, and any other folders you want to keep yourself organized. 
+
+# 3. Organize your data
+
+Download the penguin data and save it in your newly created `data` folder. 
+
+In RStudio, notice that your folders and files show in the bottom right `Files` pane.
+
+# 4. Create an R script
+
+a) In RStudio, create a new script and save it in your `R` folder, with the name "my-first-script.R"
+
+b) Create a header at the top of your script with your name and today's date (hint: use `#` for any text that's not R code)
+
+c) Type the code to find the square root of your favorite number. 
+
+# 5. Turn it in 
+
+Zip your whole Project folder and email to paul.lukacs@umontana.edu
+
+
+
+
+
+

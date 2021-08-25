@@ -1,0 +1,283 @@
+---
+title: "Introduction to R"
+author: "WILD 541"
+date: "9/1/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Learning goals 
+- Explain what R and RStudio are, what they are used for, and how they relate to each other.
+- Compare and contrast the following: script, console, RMarkdown
+- Organize files and directories in an RStudio Project 
+- Change default settings in RStudio 
+- Solve simple arithmetic using R 
+- Define the following terms: object, assign, call, function, arguments 
+- Create a script and save it for later use 
+- Use comments to annotate code 
+- Load data from computer into R 
+- Name objects and assign them values 
+- Call functions to explore R objects. Use function arguments to change default options
+- Download and use an R package. 
+- Render an RMarkdown HTML document, inserting code copied from a script. 
+
+
+# Introduction 
+
+## What is R? 
+- R is a coding language and the software that interprets scripts written in that language. 
+- RStudio is a popular way to work in R - you can write scripts, save them, access your files easily, run code, and see results. 
+- You will need both [R](https://cran.r-project.org/bin/windows/base/) and [RStudio](https://www.rstudio.com/products/rstudio/download/) installed for this class. 
+
+## What can R do? 
+- Statistical analyses (in that way, it can be thought of as a replacement for SAS, SPSS, etc.)
+- Data management - organizing, fixing and finding errors (in that way, it can replace Excel)
+- High-quality graphics (also a replacement for Excel)
+- GIS - create maps, visualize spatial data (replacement for ArcGIS)
+- Reports with plots embedded
+
+## Why learn R? 
+- Marketable skill in our field
+- Used in graduate degree/classes 
+- When you write code, you have a complete record of every step you took, in order. Your computer can crash and lose all your results, but if you have a copy of the script you wrote, you can recreate it all. Also, as you collect more data, you can run the same script and immediately update all your results. 
+- Makes analyses repeatable - repeat analyses from publications, share code with others
+- People have already solved many problems specific to our field. You can download code or a package of functions to solve specific problems. e.g., `adehabitatHR` to calculate home ranges, `amt` to analyze animal movement, `spaceNtime` to estimate abundance, `unmarked` to estimate occupancy. 
+
+## R community and resources
+- many issues solved online - code available by Googling
+- [Stack Overflow](https://stackoverflow.com/questions/tagged/r)
+- Cheat Sheets (Google or Help > Cheat Sheets)
+- Google error messages 
+- `?<function-name>` like `?lm` or `?mean`
+- Online learning, such as [The Carpentries](https://datacarpentry.org/R-ecology-lesson/index.html)
+
+## Reassurances
+- This class is designed to help students get comfortable with R
+- It's a new language, and there are infinite ways to use it. You only need to know enough to understand one analysis before biting off the next goal.
+ 
+# Getting oriented in RStudio
+- A *script* is a file you save that contains the commands to do some analysis along with any comments you want to make (use `#` before any text that is not R code). The goal of a script is a neat, step-by-step way to run an analysis that you can repeat anytime you want. 
+- The *console* runs commands in the R language and returns results. 
+- The *environment* pane shows all the objects you have created in your R session (we will define objects later)
+- The other 2 panes allow you access to other things, like your files, viewing plots, etc. 
+- R and RStudio are self-contained, so unless you tell R to save a file to your computer, nothing you do will change anything on your computer, and everything will disappear when you close R. This is a good thing. You can play around without messing anything up in your original file. 
+
+# Getting started
+### Fix defaults 
+- To develop good habits and code hygiene, let's fix two defaults in RStudio. Every time you restart R, you want a fresh start. 
+- The creators of RStudio suggest changing these
+- Go to `Tools` then `Global options`
+   - uncheck "Restore .RData into workspace at setup" 
+   - set "Save workspace to .RData on exit" to Never. 
+   
+### Create a project 
+It is a good idea to keep related sets of data, scripts, and results in a self-contained folder. A good way to do that is through RStudio Projects. Create an RStudio Project following these steps: 
+
+1. Navigate to `File > New Project > New Directory > New Project`
+2. Enter a name for your new folder and choose a convenient place for it on your computer. Name it something like `research-design`. 
+3. Click `Create Project`. Notice that your project name now shows in the top right corner of RStudio. 
+4. In your File Explorer or Finder, navigate to your newly created folder, and add sub-folders, including `data`, `R`, `figures`, and any other folders you want to keep yourself organized. 
+5. Download the penguin data and save it in your newly created `data` folder. In RStudio, notice that your folders and files show in the bottom right `Files` pane. 
+
+## Try out some code 
+
+- Write some code directly in the console and press Enter:
+```{r eval = F}
+2 + 4 - (7+3) / 12
+```
+- Start a new script: `File > New File > R Script`
+- Write the same code in your script and run it on the console by pressing Ctrl+Enter (PC) or Cmd+Enter (Mac)
+
+# Objects 
+When we just ran code in the console, it printed out the answer. You can also save the answer in an *object* for later use. 
+
+You can name objects nearly anything you want, following these guidelines: 
+
+- Names should be memorable and short. 
+- Names cannot start with numbers, cannot have spaces, and should generally avoid using dots (`.`).
+- Certain names already exist in R and you cannot/should not use them, (`for`, `if`, `T`, `mean`). If RStudio auto-completes the name, that means it's already in use.
+
+The assignment arrow `<-` allows the user to name an object and define it. For example: 
+
+```{r}
+my_calculation <- 2 + 8
+```
+
+When you assign objects, the console does not display the answer of the calculation. To view it, we have to *call* the object by typing its name 
+
+```{r}
+my_calculation
+```
+
+See the object now exists in the `Environment` pane
+
+# Functions and their arguments
+
+Functions are self-contained modules of code that complete certain tasks. Functions usually allow users to vary the input, and functions usually return a value. You can recognize functions because they have parentheses after the function name. R comes with a certain number of functions built in, called "base" functions. You can also create your own functions or download functions that others have created (more on this when we discuss packages).
+
+### Functions with a single argument 
+
+One function in R is `sqrt()`. It takes a number as the input and returns the square root of that number. 
+
+```{r}
+sqrt(25)
+```
+
+In this example, the function has one *argument*, or input inside the parentheses. For this function, the input must be a number (not a word, factor, or data set). We know this because 
+
+a) We get an error if we try
+```{r, eval = F}
+sqrt("abracadabra")
+```
+b) if we look at the function documentation, under **Arguments** in `?sqrt`
+
+### Functions with multiple arguments
+
+Some functions have multiple arguments, separated by commas. 
+
+```{r}
+round(3.14159, digits = 2)
+```
+We typically don't name the first argument (the number to be rounded in this example), but we name the subsequent arguments (`digits` in this example). As long as you name arguments, it doesn't matter what order you list them in. 
+
+### Optional arguments
+
+Some functions have optional arguments, meaning you can choose to include them or not. Commonly arguments have defaults. If you do not specify the argument, it will use its default value. In the function `round()`, the `digits` arguments has a default of 0, so it will round to the nearest whole number (See `?round`)
+
+```{r}
+round(3.14159)
+```
+
+# Working with data 
+
+[Penguin dataset](https://oceaninformatics.ucsd.edu/datazoo/catalogs/pallter/datasets/220)
+
+When you read in data to R, you access a data file (often a CSV) on your computer and open it with R. You can look at the data, change it, and run analyses on it without changing the original file. 
+
+```{r, eval = F}
+penguin <- read.csv("your-file-path/penguins_clean.csv")
+```
+```{r, echo = F}
+penguin <- read.csv(here::here("data/penguins_clean.csv"))
+```
+Note: when you work with RStudio Projects, your R session is automatically "looking" in the project folder so you don't have to give the entire pathway. This is called a **working directory**.
+
+We can inspect the object named penguin. 
+
+```{r, eval = F}
+penguin
+head(penguin)
+```
+
+Here is a list of useful functions for inspecting data in R. 
+
+- `head()`
+- `tail()`
+- `View()`
+- `dim()`
+- `nrow()`
+- `ncol()`
+- `str()`
+- `summary()`
+- `class()`
+- `colnames()`
+
+To access a column in a data set by name we use `$`. 
+```{r}
+penguin$Sex
+```
+### Saving changes
+
+When you are done working with your data in R (rearranging it, fixing errors, etc.) you can save the new version on your computer. We will do this in future labs. 
+
+# Object-oriented programming 
+- Everything in R is an *object* 
+- Every object has a *class* 
+- The class of an object determines how code behaves on that object 
+
+For example: `plot()` is an object with the class *function*. Functions do an action and create an output (in this case, a plot) when you put something inside the parentheses. If you run `plot()` on categorical data (class: factor), it will create a box plot. If you run it on continuous data (class: numeric), it will create a scatter plot. 
+
+```{r}
+plot(x = penguin$culmen_length_mm, y = penguin$culmen_depth_mm)
+```
+
+Here are two ways to find out the class of each column 
+```{r}
+str(penguin)
+class(penguin$Species)
+```
+
+Here is a list of the most common classes of columns in R: 
+
+- character (anything in " ")
+- numeric, double, integer (numbers)
+- logical (TRUE or FALSE)
+- factor (looks like character but has "levels" or certain values that the data can take on)
+- Date 
+
+You can change the class of certain columns with the functions `as.numeric`, `as.Date`, `as.factor`, `as.character`, etc. 
+
+# RMarkdown
+
+RMarkdown is a file format for making dynamic documents. You can show code and its output, including plots. Instead of writing code and comments in a *script*, you will write text and code chunks in an *RMarkdown document*. The `Knit` function in RStudio *renders* the document, meaning it runs all the code, displays its results, and formats the written text neatly into a common file type (usually HTML, PDF, or Word).
+
+You will continue to use scripts for most of your analyses, and you will use RMarkdown for reports and assignments to be turned in. 
+
+R Markdown cheat sheet `Help > Cheat Sheets > R Markdown Cheat Sheet`
+
+When you use RMarkdown, sometimes RStudio toggles between the Console and RMarkdown tabs. Let RMarkdown do things in the RMarkdown tab. Navigate back to the Console tab manually whenever you need to see it.
+
+# Packages
+
+R comes with a certain number of functions built in. Packages give the user access to more functions. You can download packages with `install.packages("package-name")`. This puts the package on your computer. (Find where with `.libPaths()`.) You can use packages with `library("package-name")`. 
+
+## Install packages we will need in this exercise
+```{r, eval = F}
+install.packages("here")
+```
+
+## here()
+
+RMarkdown documents don't automatically think of the Project base folder as the working directory. To fix this, we can use the function `here()` from the package `here` whenever we type in a file path.
+
+To get access to the package `here` use 
+```{r, eval = F}
+library(here)
+```
+
+The function `here()` works like this 
+```{r, eval = F}
+here("data/Penguin data.csv")
+```
+
+# Glossary
+
+- arguments: the input of a function. 
+- console: The place where R commands are run and outputs are displayed. 
+- command: a bit of R code
+- environment: all the objects you have defined in your current R session. 
+- function: a self-contained module of code that completes a certain task. Functions usually allow users to vary the input (arguments), and functions usually return a value (output). You can recognize functions because they have parentheses after the function name.  
+- script: A file that contains R code and comments (marked by `#`). Scripts should be organized step-by-step to do a single task (e.g., data cleaning or running an analysis). Saved scripts have a .R extension. 
+- RMarkdown: a file format for creating dynamic documents. 
+- object: the basic currency of R. You create objects using the assignment arrow `<-` so you can use them later, calling them by name
+- package: a bundle of R functions, documentation, and sometimes data, that a user can download.
+- project: An RStudio tool for organizing related files for an analysis. 
+- read in data: tell R to open a data file (often a CSV) in R so the data can be viewed and manipulated without changing the original file. 
+
+# Keyboard shortcuts
+
+- Ctrl+Enter (PC) or Cmd+Enter (Mac): takes code written in a script to the console and executes it, returning output
+- Ctrl+Shift+C (PC): Comment/uncomment a block of highlighted code 
+- Ctrl+1: Move cursor to script 
+- Ctrl+2: Move cursor to console
+- Ctrl+z: undo
+- Ctrl+c: copy 
+- Ctrl+x: cut
+- Ctrl+v: paste
+
+
+
+
