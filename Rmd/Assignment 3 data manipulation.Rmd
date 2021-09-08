@@ -1,0 +1,45 @@
+---
+title: "Assignment 3"
+author: "WILD 541"
+date: "TBD"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# 1. 
+Update the header with your name and today's date. 
+
+# 2. 
+Read in penguins_clean.csv file and assign it to an object name
+```{r}
+
+```
+
+# 3. 
+Create a new object that retains only the following columns: individualID, Species, Stage, culmen_length_mm, culmen_depth_mm, and body_mass_g
+```{r}
+
+```
+
+# 4. 
+Use the object made in #3 and create a new object keeping only the rows where culmen length is greater than or equal to 48 mm. 
+```{r}
+```
+
+# 5.
+Create a new object from the object created in #4 and add a new column that contains culmen length in inches (hint: to go from mm to in, divide by 25.4)
+```{r}
+
+```
+
+# 6. 
+String together steps 2-5 so you get the same result as #5 without making any intermediate objects. 
+```{r}
+
+```
+
+# 7. 
+Run spell check on this document (`Edit > Check Spelling`), then render this document using the **Knit** button. Email the resulting HTML file to paul.lukacs@umontana.edu

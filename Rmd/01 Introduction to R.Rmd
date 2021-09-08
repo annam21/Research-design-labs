@@ -44,14 +44,14 @@ knitr::opts_chunk$set(echo = TRUE)
 - Used in graduate degree/classes 
 - When you write code, you have a complete record of every step you took, in order. Your computer can crash and lose all your results, but if you have a copy of the script you wrote, you can recreate it all. Also, as you collect more data, you can run the same script and immediately update all your results. 
 - Makes analyses repeatable - repeat analyses from publications, share code with others
-- People have already solved many problems specific to our field. You can download code or a package of functions to solve specific problems. e.g., `adehabitatHR` to calculate home ranges, `amt` to analyze animal movement, `spaceNtime` to estimate abundance, `unmarked` to estimate occupancy. 
+- People have already solved many problems specific to our field. You can download code or a package of functions to solve specific problems. e.g., **`adehabitatHR`** to calculate home ranges, **`amt`** to analyze animal movement, **`spaceNtime`** to estimate abundance, **`unmarked`** to estimate occupancy. 
 
 ## R community and resources
 - many issues solved online - code available by Googling
 - [Stack Overflow](https://stackoverflow.com/questions/tagged/r)
 - Cheat Sheets (Google or Help > Cheat Sheets)
 - Google error messages 
-- `?<function-name>` like `?lm` or `?mean`
+- `?function-name` like `?lm` or `?mean`
 - Online learning, such as [The Carpentries](https://datacarpentry.org/R-ecology-lesson/index.html)
 
 ## Reassurances
@@ -59,16 +59,16 @@ knitr::opts_chunk$set(echo = TRUE)
 - It's a new language, and there are infinite ways to use it. You only need to know enough to understand one analysis before biting off the next goal.
  
 # Getting oriented in RStudio
-- A *script* is a file you save that contains the commands to do some analysis along with any comments you want to make (use `#` before any text that is not R code). The goal of a script is a neat, step-by-step way to run an analysis that you can repeat anytime you want. 
-- The *console* runs commands in the R language and returns results. 
-- The *environment* pane shows all the objects you have created in your R session (we will define objects later)
-- The other 2 panes allow you access to other things, like your files, viewing plots, etc. 
+- A **script** is a file you save that contains the commands to do some analysis along with any comments you want to make (use `#` before any text that is not R code). The goal of a script is a neat, step-by-step way to run an analysis that you can repeat anytime you want. 
+- The **console** runs commands in the R language and returns results. 
+- The **environment** pane shows all the objects you have created in your R session (we will define objects later)
+- The tabs on the final pane allows you access to other things, like your files, viewing plots, etc. 
 - R and RStudio are self-contained, so unless you tell R to save a file to your computer, nothing you do will change anything on your computer, and everything will disappear when you close R. This is a good thing. You can play around without messing anything up in your original file. 
 
 # Getting started
 ### Fix defaults 
 - To develop good habits and code hygiene, let's fix two defaults in RStudio. Every time you restart R, you want a fresh start. 
-- The creators of RStudio suggest changing these
+- The creators of RStudio suggest changing these.
 - Go to `Tools` then `Global options`
    - uncheck "Restore .RData into workspace at setup" 
    - set "Save workspace to .RData on exit" to Never. 
@@ -92,13 +92,13 @@ It is a good idea to keep related sets of data, scripts, and results in a self-c
 - Write the same code in your script and run it on the console by pressing Ctrl+Enter (PC) or Cmd+Enter (Mac)
 
 # Objects 
-When we just ran code in the console, it printed out the answer. You can also save the answer in an *object* for later use. 
+When we just ran code in the console, it printed out the answer. You can also save the answer in an **object** for later use. 
 
 You can name objects nearly anything you want, following these guidelines: 
 
 - Names should be memorable and short. 
 - Names cannot start with numbers, cannot have spaces, and should generally avoid using dots (`.`).
-- Certain names already exist in R and you cannot/should not use them, (`for`, `if`, `T`, `mean`). If RStudio auto-completes the name, that means it's already in use.
+- Certain names already exist in R and you cannot/should not use them (`for`, `if`, `T`, `mean`). If RStudio auto-completes the name, that means it's already in use.
 
 The assignment arrow `<-` allows the user to name an object and define it. For example: 
 
@@ -106,7 +106,7 @@ The assignment arrow `<-` allows the user to name an object and define it. For e
 my_calculation <- 2 + 8
 ```
 
-When you assign objects, the console does not display the answer of the calculation. To view it, we have to *call* the object by typing its name 
+When you assign objects, the console does not display the answer of the calculation. To view it, we have to **call** the object by typing its name 
 
 ```{r}
 my_calculation
@@ -126,7 +126,7 @@ One function in R is `sqrt()`. It takes a number as the input and returns the sq
 sqrt(25)
 ```
 
-In this example, the function has one *argument*, or input inside the parentheses. For this function, the input must be a number (not a word, factor, or data set). We know this because 
+In this example, the function has one **argument**, or input inside the parentheses. For this function, the input must be a number (not a word, factor, or data set). We know this because 
 
 a) We get an error if we try
 ```{r, eval = F}
@@ -194,11 +194,11 @@ penguin$Sex
 When you are done working with your data in R (rearranging it, fixing errors, etc.) you can save the new version on your computer. We will do this in future labs. 
 
 # Object-oriented programming 
-- Everything in R is an *object* 
-- Every object has a *class* 
+- Everything in R is an **object** 
+- Every object has a **class** 
 - The class of an object determines how code behaves on that object 
 
-For example: `plot()` is an object with the class *function*. Functions do an action and create an output (in this case, a plot) when you put something inside the parentheses. If you run `plot()` on categorical data (class: factor), it will create a box plot. If you run it on continuous data (class: numeric), it will create a scatter plot. 
+For example: `plot()` is an object with the class **function**. Functions do an action and create an output (in this case, a plot) when you put something inside the parentheses. If you run `plot()` on categorical data (class: factor), it will create a box plot. If you run it on continuous data (class: numeric), it will create a scatter plot. 
 
 ```{r}
 plot(x = penguin$culmen_length_mm, y = penguin$culmen_depth_mm)
@@ -243,7 +243,7 @@ install.packages("here")
 
 RMarkdown documents don't automatically think of the Project base folder as the working directory. To fix this, we can use the function `here()` from the package `here` whenever we type in a file path.
 
-To get access to the package `here` use 
+To get access to the package **`here`** use 
 ```{r, eval = F}
 library(here)
 ```
@@ -260,12 +260,14 @@ here("data/Penguin data.csv")
 - command: a bit of R code
 - environment: all the objects you have defined in your current R session. 
 - function: a self-contained module of code that completes a certain task. Functions usually allow users to vary the input (arguments), and functions usually return a value (output). You can recognize functions because they have parentheses after the function name.  
-- script: A file that contains R code and comments (marked by `#`). Scripts should be organized step-by-step to do a single task (e.g., data cleaning or running an analysis). Saved scripts have a .R extension. 
-- RMarkdown: a file format for creating dynamic documents. 
 - object: the basic currency of R. You create objects using the assignment arrow `<-` so you can use them later, calling them by name
 - package: a bundle of R functions, documentation, and sometimes data, that a user can download.
 - project: An RStudio tool for organizing related files for an analysis. 
-- read in data: tell R to open a data file (often a CSV) in R so the data can be viewed and manipulated without changing the original file. 
+- read in data: tell R to open a data file (often a CSV) in R so the data can be viewed and manipulated without changing the original file.
+- render: to compile an RMarkdown document into its target file type (e.g., HTML, PDF, Word). Accomplished with the **Knit** button
+- RMarkdown: a file format for creating dynamic documents. 
+- script: A file that contains R code and comments (marked by `#`). Scripts should be organized step-by-step to do a single task (e.g., data cleaning or running an analysis). Saved scripts have a .R extension. 
+- working directory: The computer folder that R looks in for files if you don't specify anything else. 
 
 # Keyboard shortcuts
 

@@ -1,0 +1,39 @@
+---
+title: "Assignment 4"
+author: "WILD 541"
+date: "TBD"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# 1. 
+Fix the header with your name and today's date. 
+
+# 2.
+Read in the messy penguin data ("penguins_raw.csv") and assign it to an object. 
+```{r}
+
+```
+
+# 3.
+Assign a new object and complete the following tasks in order: 
+
+- Rename all columns that have spaces or special characters.
+- Investigate the values in the column `Sex`. Remove any rows where the value in this column is not `MALE` or `FEMALE`.
+- Remove rows that have an NA in any column
+
+```{r}
+
+```
+
+# 4. 
+Save your newly cleaned data as a CSV
+```{r}
+
+```
+
+# 5. 
+Run spell check on this document (`Edit > Check Spelling`), then render this document using the **Knit** button. Email the resulting HTML file to paul.lukacs@umontana.edu

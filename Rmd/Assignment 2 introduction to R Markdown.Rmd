@@ -1,0 +1,42 @@
+---
+title: "Assignment 2 introduction to Rmd"
+author: "J. Doe"
+date: "8/24/2021"
+output: html_document
+---
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+You can embed an R code chunk like this:
+```{r}
+head(cars)
+```
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. Try it now!
+
+## Assignment 
+
+1. In the header, change the name of the author to your name and update the date to today's date. 
+
+2. Load your penguin data (tip: use `here()` to help navigate to the right file)
+```{r}
+
+```
+
+3. Display the first 6 lines of your data using the function `head()`
+```{r}
+
+```
+
+4. Display the first 3 lines of your data, using an optional argument in the function `head()`
+```{r}
+
+```
+
+5. How many columns are in the penguin data? Explain how you found that number and include code that helped you.
+```{r}
+
+```
+
+6. Run spell check on this document (`Edit > Check Spelling`), then render this document using the **Knit** button. Email the resulting HTML file to paul.lukacs@umontana.edu

@@ -11,7 +11,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # In lab 3, have them create their own markdown document. 
 
-
 List of all the base R functions 
 library(help = "base")
 starting at abbreviate
@@ -26,3 +25,58 @@ starting at abbreviate
 - The class of an object determines how code behaves on that object 
 
 For example: `plot()` is an object with the class *function*. Functions do an action and create an output (in this case, a plot) when you put something inside the parentheses. If you run `plot()` on categorical data (class: factor), it will create a boxplot. If you run it on continuous data (class: numeric), it will create a scatterplot. 
+
+
+# Finding duplicates 
+
+# Finding outliers (data entry errors)
+
+Do the data make sense? Look for values that *just can't be*. Functions that can be useful here are 
+
+- for data frames: 
+  - `summary()`
+- for columns in a data frame: 
+  - `range()`
+  - `table()`
+  - `unique()`
+  
+# Reordering rows in data 
+
+To show rows in a sequential order, use `arrange()`
+
+```{r}
+penguin %>% 
+  arrange(sample_number)
+```
+
+
+# 2.
+Read in the messy penguin data ("penguins_raw.csv") and assign it to an object. 
+```{r}
+
+```
+
+# 3. 
+Assign a new object and rename all columns that have spaces or special characters.
+```{r}
+
+```
+
+# 4. 
+Using the object created in #3, investigate the values in the column `Sex`. Create a new object and remove any rows where the value in this column is not "Male" or "Female"
+```{r}
+
+```
+
+
+# 5. 
+Using the object created in #4, remove all rows that have an NA in any column and assign this as a new object. 
+```{r}
+
+```
+
+# 6. 
+Save your newly cleaned data as a CSV
+```{r}
+
+```

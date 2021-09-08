@@ -7,37 +7,335 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(here)
+library(knitr)
+library(kableExtra)
 ```
+
+# Learning objectives - the essentials
+
+- Describe the characteristics of clean data
+- Understand the purpose of the **`tidyverse`** suite of packages
+- Contrast long data and wide data
+- Extract or reorder columns using `select()`
+- Extract rows according to logical (Boolean) conditions using `filter()`
+- Add new columns using `mutate()`
+- Summarize data using `group_by()` and `summarize()`
+- String together **`dplyr`** commands using the pipe operator `%>%`
+- Export a data frame to a .csv file
+
+# Learning objectives - advanced
+- Learn how to handle missing data in the form of `NA`s
+- Rename columns 
+- Reshape data from long to wide or wide to long using `pivot_wider()` and `pivot_longer()` 
+
+
+# Resources
+- `Help > Cheat Sheets > Data Transformation with dplyr`
+- [Reference sheet](https://dplyr.tidyverse.org/reference/index.html)
+- Stack Overflow (Google your question, click on the relevant Stack Overflow link)
+- [Tidy Data](http://vita.had.co.nz/papers/tidy-data.pdf)
+- [The Carpentries](https://datacarpentry.org/R-ecology-lesson/03-dplyr.html)
+
+# Wide vs. long data 
+
+### What are long data? 
+
+In long data: 
+
+- Each variable forms a column 
+- Each observation forms a row
+
+```{r, echo = F}
+t <- tibble::tibble(
+  plot = c(1,1,2,2),
+  treatment = c("A", "B", "A", "B"),
+  abundance = c(12, 15, 20, 21)
+)
+kable(t, align = "l",
+      # caption = "Long data"
+      )  %>% 
+  kable_styling(full_width = FALSE, position = "left")
+```
+
+### What are wide data? 
+
+Wide data show observations in columns. 
+
+Here is one way to show the data in wide format
+
+```{r, echo = F}
+t %>% 
+  pivot_wider(names_from = treatment, values_from = abundance, names_prefix = "treatment_") %>%
+  # knitr::kable(format = "html", table.attr = "style='width:30%;'")
+  knitr::kable(align = "l", 
+               # caption = "Wide data, version 1"
+               ) %>% 
+  kable_styling(full_width = FALSE, position = "left") 
+
+```
+
+Here is a second way to show the same data in wide format 
+
+```{r, echo = F}
+t %>% 
+  pivot_wider(names_from = plot, values_from = abundance) %>%
+  knitr::kable(align = "l", 
+               # caption = "Wide data, version 2"
+               ) %>% 
+  kable_styling(full_width = FALSE, position = "left") %>%
+  add_header_above(c(" " = 1, "Plot" = 2))
+```
+
+### Why use long data? 
+
+- There are many ways to display or organize wide data, but only one way to display long data 
+- R functions work on columns. It is far simpler to arrange, subset, or summarize data in a column than across columns. This is because R functions only work on data of the same class. All entries in a column have the same class whereas different columns can have different classes. 
+
+# Clean data
+
+Clean data have the following properties: 
+
+- contain only column names and data (no graphs, no color-coding)
+- no duplicate or irrelevant observations 
+- everything that should be grouped together is entered in *exactly* the same way 
+  - R is case-sensitive and space-sensitive so `"Male"`, `"male"`, `"male "`, and `"M"` will all be treated as different values 
+- column names should not have spaces or special characters 
+- each column should be the correct class 
+  - e.g., Dates should be treated as dates, not as characters. 
+- missing data are identified and potentially removed
+  - missing data should be entered as `NA`, which has special meaning in R. Notice, it has no quotes and is not a character (`"NA"` or `"N/A"` or `"Not applicable"`)
+- No errors from data entry 
 
 # Getting started 
 
-We will be using functions from the `tidyverse` suite of packages, which are designed for data manipulation. `tidyverse` is an *umbrella package* or a package of packages. When you install it, you will see on the console all the packages it contains as it downloads. 
+As a reminder, packages are sets of functions that you can download and use in R. You download the package once to your computer using `install.packages("package-name")` and you can use the functions in R by calling `library("package-name")` at the beginning of your R session. 
+
+We will be using functions from the **`tidyverse`** suite of packages, which are designed for data manipulation. **`tidyverse`** is an *umbrella package* or a package of packages. When you install it, it will print out all the packages it contains on the console. 
+
+One of the most used packages in **`tidyverse`** is **`dplyr`**. We will talk about a lot of commands from that package. 
 
 ```{r, eval = F}
 install.packages("tidyverse")
 ```
 
-To use the package 
-```{r}
+Packages we will use
+```{r, eval = F}
 library(tidyverse)
 library(here)
 ```
 
 # Read in data 
+
+The first **`tidyverse`** function we will use is `read_csv()`. This serves the same basic purpose of `read.csv()`, but it fixes some issues and undesirable features of that function. From now on, we will use `read_csv` for loading data. 
+
 ```{r}
-penguin <- read_csv(here("data/penguins_raw.csv"))
+penguin <- read_csv(here("data/penguins_clean.csv"))
 ```
 
-# Wide vs. long data 
-```{r}
-
+### Preview the data 
+```{r, eval = F}
+head(penguin)
+str(penguin)
 ```
 
-# Save your output 
-write_csv()
+# Selecting, removing, and rearranging *columns* 
+
+The function `select()` works on *columns*. The first argument to this function and all dplyr functions is the data frame you're working on. The rest of the arguments in `select()` are the names of the columns you want to retain, in the order you want to show them. 
+
+```{r}
+select(penguin, individualID, Species, Stage)
+```
+
+Notice that column names are **NOT** put in quotation marks `" "` when using `select()`. This is one of the advantages of dplyr -- it makes typing faster. 
+
+To select all columns *except* certain ones, you can subtract those columns 
+```{r}
+select(penguin, -studyName, -Comments)
+```
+
+Note: you cannot combine subtracting columns with positively selecting columns. You must do all of one or the other. 
+
+# Selecting and removing *rows* 
+
+The function `filter()` works on *rows*. As with `select()`, the first argument of `filter()` is the name of the data you're working with. The subsequent arguments are the Boolean (logical) conditions that must be met to *keep* any given row. 
+```{r}
+filter(penguin, culmen_depth_mm < 15)
+```
+This code only *keeps* observations of individuals that have a culmen depth of less than 15 mm. 
+
+### Boolean operators (aka logical operators)
+```{r, echo = F}
+
+b <- tibble::tibble(
+  Operator = c("<", "<=", ">", ">=", "==", "!=", "|", "&"), 
+  Description = c("less than", "less than or equal to", "greater than", "greater than or equal to", "exactly equal to", "not equal to", "or", "and") 
+)
+kable(b, caption = "Boolean operators") %>% 
+  kable_styling(full_width = FALSE, position = "left")
+``` 
+
+# Adding new columns 
+
+To add a new column, use `mutate()`. Like other **`dplyr`** functions, the first argument is the name of the data you're working with. The structure of each argument after that is 
+
+`<new-column-name> = <value>`
+
+```{r}
+tmp <- select(penguin, individualID, culmen_length_mm)
+mutate(tmp, 
+       treatment = "Control", 
+       culmen_length_m = culmen_length_mm/1000,
+       culmen_length_ft = culmen_length_m * 3.281)
+```
+
+Mutate can create columns with entirely new values (like the `treatment` column) or calculate values based on preexisting columns (like `culmen_length_m`). You can even use columns you've just created (like `culmen_length_ft`). 
+
+# Stringing together **`dplyr`** commands
+
+What if we want to both select columns and filter rows? 
+
+**`dplyr`** and the **`tidyverse`** in general offer a solution to doing multiple commands without creating intermediate objects. It's called the *pipe*, which looks like this `%>%`
+
+The pipe goes after a **`dplyr`** function, and it tells R to keep looking for another function to do next. The pipe tells R to move data forward through a sequence of functions. When using `%>%`, you will not need to fill in the data argument of **`dplyr`** functions.
+
+When using `%>%`, try to organize your code vertically by going to a new line after each `%>%`.
+
+```{r}
+penguin %>% 
+  filter(Species == "Chinstrap penguin (Pygoscelis antarctica)") %>%
+  select(individualID, date_egg, Sex) 
+```
+
+Notice that R executes each line in order, so switching the functions will not always work.
+
+```{r, eval = F}
+penguin %>% 
+  select(individualID, date_egg, Sex) %>% 
+  filter(Species == "Chinstrap penguin (Pygoscelis antarctica)") 
+  
+```
+
+# Summarizing data 
+
+**`dplyr`** offers a way to very quickly organize and summarize data through the combination of functions `group_by()` and `summarize()`. The two are most frequently used together. 
+
+For `group_by()` the arguments are the names of the columns you want to use as grouping variables. 
+
+For `summarize()`, the structure of each argument is:
+
+`<new-variable-name> = some-function(<existing-variable-name>)`
+
+```{r}
+penguin %>% 
+  group_by(Species, Sex) %>% 
+  summarize(mn_mass = mean(body_mass_g))
+```
+
+# Saving your clean data
+
+If you are working with raw data and write an R script to make it clean and tidy, you can save the clean data as a CSV. To do so you will need to 
+
+1. Assign your clean data as an object
+2. Use `write_csv()` to save a CSV file. 
+
+For example: 
+```{r, eval = F}
+peng2 <- penguin %>% 
+  group_by(Species, Sex) %>% 
+  summarize(mn_mass = mean(body_mass_g))
+
+write_csv(peng2, "data/penguin_summary.csv")
+```
+
+
+# Advanced data manipulation 
+
+# Handling NAs
+
+Missing data should be recorded in R as `NA`, which has special meaning in R. Let's add an `NA` to our data so we can work with it. 
+
+```{r}
+penguin2 <- penguin
+penguin2[2, 2] <- NA
+head(penguin2)
+```
+
+To find NAs in the data, you will not be able to use this code: 
+```{r, eval = F}
+penguin2 %>% 
+  filter(sample_number == NA)
+```
+
+Instead, you will need to use the function `is.na()`.
+
+```{r}
+penguin2 %>% 
+  filter(is.na(sample_number))
+```
+
+You can find values that are anything other than `NA` using `!is.na()`
+```{r}
+penguin2 %>% 
+  filter(!is.na(sample_number))
+```
+
+There are always special functions to find `NA`s. Another useful one is `drop_na()`, which will remove all rows that have an `NA` in any column. 
+
+If any value in the column is `NA`, R will not know how to compute summary functions (like `mean()`), so the answer will be `NA`. Therefore, many summary functions have an optional `na.rm = T`. Compare the output between these two lines of code
+
+```{r}
+penguin2 %>% 
+  group_by(Species) %>% 
+  summarize(mn_sample_num = mean(sample_number))
+penguin2 %>% 
+  group_by(Species) %>% 
+  summarize(mn_sample_num = mean(sample_number, na.rm = T))
+```
+# Renaming columns
+
+To rename columns, use the function `rename()`. The syntax of the arguments is 
+
+`<new-column-name> = <old-column-name>`
+
+```{r}
+penguin %>% 
+  rename(styNm = studyName)
+```
+
+# Reshaping long and wide data 
+
+You can transform wide data to long format and vice versa using the functions `pivot_wider()` and `pivot_longer()` from the **`tidyr`** package (part of the **`tidyverse`** suite of packages.)
+
+To go from long to wide data, you will use `pivot_wider()`. This function requires the arguments `names_from` (the name of the column in your long data set whose values will each become column names in the wide data set) and `values_from` (the name of the column in your long data whose values will fill in the values of your new columns in your wide data set)
+
+![](../misc/pivot_wider image.jpg)
+
+To go from wide data to long data, you will use `pivot_longer()`. The first argument does not have a counterpart in `pivot_wider()`. You will need to specify exactly which columns will be involved in the pivot and which should be left alone. 
+
+`pivot_longer()` additionally requires arguments that are similar to those from `pivot_wider()`. `names_to` will be the name of the new column you will create from the column names in your wide data and `values_to` will be the name of the new column you will create containing the values in your current wide data.  
+
+
+![](../misc/pivot_longer image.jpg)
+
+
+
+
+
+
+
+
+
 
 # Glossary 
 
-- long data: data set up where each row contains one observation 
+- Boolean: logical statements that when evaluated return TRUE or FALSE 
+- dplyr: a package in the **`tidyverse`** suite of packages that contains data manipulating functions like `select()`, `filter()`, and `mutate()`
+- long data: data set up where each row contains one observation and each column is a variable
 - tidyverse: an R package that is built for data manipulation
-- wide data: data set up where columns contain multiple observations 
+- wide data: data set up where columns contain observations 
+
+# Keyboard shortcuts
+
+- `Ctrl+Shift+M` on PC or `Cmd+Shift+M` on Mac: %>%
