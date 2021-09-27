@@ -1,0 +1,55 @@
+---
+title: "Assignment 5 data visualization"
+author: "TBD"
+date: "TBD"
+output: html_document
+---
+
+# 1
+Load the clean penguin data. 
+
+```{r}
+
+```
+
+# 2
+Create a scatter plot with culmen length as the independent variable, culmen depth as the response variable, and Species showing in different colors.
+
+```{r}
+
+```
+
+# 3
+Create a scatter plot with culmen length as the independent variable, culmen depth as the response variable, and every point displayed in the color "green".
+
+```{r}
+
+```
+
+# 4
+Create a histogram of flipper length. 
+
+```{r}
+
+```
+
+# 5
+Create a boxplot to show how body mass differs by Sex.  
+
+```{r}
+
+```
+
+# 6
+Select one of the three previous plots and: 
+  a) Change the plot's theme to `theme_classic()`
+  b) Change the x and y axis labels to look more professional.
+  c) Add an informative plot title (hint: use `ggtitle()`)
+  
+```{r}
+
+```
+
+# Final steps 
+
+Make sure your name and date are correct in the header. Run spellcheck, then knit this document. Email the knitted HTML to paul.lukacs@umontana.edu.

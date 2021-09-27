@@ -1,0 +1,25 @@
+---
+title: "Assignment 6 data visualization"
+author: "TBD"
+date: "TBD"
+output: html_document
+---
+
+
+# Getting started 
+
+Load the clean penguin data to prepare for the assignment
+```{r}
+
+```
+
+add lm 
+add confidence intervals 
+add density curve to histogram
+facets 
+
+
+
+# Final steps 
+
+Make sure your name and date are correct in the header. Run spellcheck, then knit this document. Email the knitted HTML to paul.lukacs@umontana.edu.

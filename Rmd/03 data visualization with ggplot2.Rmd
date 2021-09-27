@@ -1,0 +1,149 @@
+---
+title: "Data visualization with ggplot2"
+author: "WILD 541"
+date: "9/29/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Learning objectives 
+
+- Understand the syntax of a call to `ggplot()`
+- Create scatter plots, box plots, and histograms
+- Display results by groups in the data
+- Modify plot characteristics by adding elements
+
+# Resources
+
+- `Help > Cheat Sheets > Data visualization with ggplot2`
+
+# What is ggplot2?
+
+**`ggplot2`** is a package built for visualizing data and results. **`ggplot2`** works somewhat uniquely in that each component of the plot is an element (or layer) that you add, rather than being an argument in a function. 
+
+`ggplot` is both a function in **`ggplot2`** and its output (a ggplot)
+
+**`ggplot2`** is in the **`tidyverse`** suite of packages. Since we will also be using dplyr functions, we will load the **`tidyverse`** in its entirety. 
+```{r, message = F}
+library(tidyverse)
+library(here)
+```
+
+**`ggplot2`** works best with data in long format. 
+
+To build a ggplot, we will use the following structure: 
+```{r, eval = F}
+ggplot(data = <DATA>,
+       mapping = aes(<MAPPINGS>) ) + 
+  <GEOM_FUNCTION>()
+```
+
+There are 3 critical things to fill in: 
+
+1. `<DATA>` The name of your data, which is in long format
+2. `<MAPPINGS>` "aesthetic mappings" inside the `aes()` function. 
+    a. These are columns of your data that will be displayed on the plot in some way
+    b. **Note** `aes()` is a function *within* the `ggplot()` function. 
+3. `<GEOM_FUNCTION>` what type of plot you want to build. This is a function beginning with `geom_` such as `geom_boxplot()`, `geom_point()`, or `geom_histogram()`. 
+    a. See the full list [here](https://ggplot2.tidyverse.org/reference/#section-layers) 
+
+**`ggplot`** code looks unique because it uses `+` at the end of each line. The `+` is related to `%>%` but not exactly the same because it doesn't the order of elements rarely matters. 
+
+# Building a ggplot scatter plot
+```{r, message = F}
+penguin <- read_csv(here("data/penguins_clean.csv"))
+```
+To build a scatter plot, we will use the following: 
+
+- `<DATA>` penguin
+- `<MAPPINGS>` the column names in penguin that will serve as the independent (x) and dependent (y) variables
+- `<GEOM_FUNCTION>` geom_point() for a scatter plot 
+
+```{r}
+ggplot(data = penguin,
+       mapping = aes(x = body_mass_g, 
+                     y = flipper_length_mm)) + 
+  geom_point()
+```
+
+If we want to change something about all the points at once, we can add it as an argument in `geom_point()`. See all possible arguments on the ggplot2 Cheat Sheet. 
+
+```{r}
+ggplot(data = penguin,
+       mapping = aes(x = body_mass_g, 
+                     y = flipper_length_mm)) + 
+  geom_point(alpha = 0.4, color = "blue")
+```
+Alternatively, to change how the points display based on another variable in the data, add it to `aes()` instead of `geom_point()`
+```{r}
+ggplot(data = penguin,
+       mapping = aes(x = body_mass_g, 
+                     y = flipper_length_mm,
+                     color = Species)) + 
+  geom_point()
+```
+
+# Changing elements of a ggplot
+
+Things that apply to the way the plot *itself* looks, not how the data are visualized, are considered additional elements that you add to the plot. Examples include (but are not limited to!):
+
+- changing axis labels
+- changing the background 
+- changing the axis scale
+- adding a title 
+
+To change the background, we can add a theme 
+```{r, message = F}
+ggplot(data = penguin,
+       mapping = aes(x = body_mass_g, 
+                     y = flipper_length_mm,
+                     color = Species)) + 
+  geom_point() + 
+  theme_classic()
+```
+
+To change the axis labels, we can continue to add on 
+```{r, message = F}
+ggplot(data = penguin,
+       mapping = aes(x = body_mass_g, 
+                     y = flipper_length_mm,
+                     color = Species)) + 
+  geom_point() + 
+  theme_classic() + 
+  xlab("Body mass (g)") + 
+  ylab("Flipper length (mm)")
+```
+
+# Building different types of plots 
+
+### A boxplot 
+
+To build a boxplot instead of a scatter plot, we change the `<GEOM_FUNCTION>` from `geom_point()` to `geom_boxplot()`
+
+```{r, message = F}
+ggplot(data = penguin,
+       mapping = aes(x = body_mass_g, 
+                     y = flipper_length_mm,
+                     color = Species)) + 
+  geom_boxplot()
+```
+
+### Histogram
+
+To build a histogram, we use `geom_histogram()` and only specify the x column in `aes()`. 
+```{r, message = F}
+ggplot(data = penguin,
+       mapping = aes(x = body_mass_g)) + 
+  geom_histogram()
+```
+
+
+
+
+
+# Quick glance 
+
+![](../misc/data-visualization cheat sheet.jpg)

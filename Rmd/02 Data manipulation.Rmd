@@ -252,7 +252,7 @@ write_csv(peng2, "data/penguin_summary.csv")
 
 # Advanced data manipulation 
 
-# Handling NAs
+## Handling NAs
 
 Missing data should be recorded in R as `NA`, which has special meaning in R. Let's add an `NA` to our data so we can work with it. 
 
@@ -283,7 +283,7 @@ penguin2 %>%
 
 There are always special functions to find `NA`s. Another useful one is `drop_na()`, which will remove all rows that have an `NA` in any column. 
 
-If any value in the column is `NA`, R will not know how to compute summary functions (like `mean()`), so the answer will be `NA`. Therefore, many summary functions have an optional `na.rm = T`. Compare the output between these two lines of code
+If any value in the column is `NA`, R will not know how to compute summary functions (like `mean()`), so the answer will be `NA`. Therefore, many summary functions have an optional `na.rm = T` argument. Compare the output between these two lines of code
 
 ```{r}
 penguin2 %>% 
