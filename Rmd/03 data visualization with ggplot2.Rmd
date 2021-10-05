@@ -50,7 +50,7 @@ There are 3 critical things to fill in:
 3. `<GEOM_FUNCTION>` what type of plot you want to build. This is a function beginning with `geom_` such as `geom_boxplot()`, `geom_point()`, or `geom_histogram()`. 
     a. See the full list [here](https://ggplot2.tidyverse.org/reference/#section-layers) 
 
-**`ggplot`** code looks unique because it uses `+` at the end of each line. The `+` is related to `%>%` but not exactly the same because it doesn't the order of elements rarely matters. 
+**`ggplot`** code looks unique because it uses `+` at the end of each line. The `+` is related to `%>%` but not exactly the same because the order of elements rarely matters. 
 
 # Building a ggplot scatter plot
 ```{r, message = F}

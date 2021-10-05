@@ -1,0 +1,174 @@
+---
+title: "04 Advanced data visualization"
+author: "WILD 541"
+date: "10/6/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Learning objectives
+- Add additional layers to a single plot
+- Display confidence intervals on a scatter plot
+- Visualize a distribution with a density plot
+- Create multiple plots using facets
+
+# Picking back up 
+
+Load packages and data
+```{r, message = F}
+library(tidyverse)
+library(here)
+
+penguin <- read_csv(here("data/penguins_clean.csv"))
+```
+
+We will start with a scatter plot
+```{r, message = F}
+ggplot(data = penguin,
+       mapping = aes(x = body_mass_g, 
+                     y = flipper_length_mm)) + 
+  geom_point() 
+```
+
+# Adding layers
+
+Whenever you want to add more things to a graph, use `+`. For example, let's add a regression line. 
+
+```{r, message = F}
+ggplot(data = penguin,
+       mapping = aes(x = body_mass_g, 
+                     y = flipper_length_mm)) + 
+  geom_point() + 
+  geom_smooth(method = "lm")
+```
+
+When you add more layers to a plot, they will inherit the `aes()` you defined for the whole plot. For example, if we include `Species` in the `aes()` mappings, ggplot automatically builds one regression line for each group and it applies the appropriate color. 
+
+```{r, message = F}
+ggplot(data = penguin,
+       mapping = aes(x = body_mass_g, 
+                     y = flipper_length_mm,
+                     color = Species)) + 
+  geom_point() + 
+  geom_smooth(method = "lm")
+```
+
+# Density plot
+
+Instead of a histogram, sometimes we want to display a smooth curve that shows the distribution. This is called a density plot.
+```{r, eval = F}
+ggplot(penguin, 
+       aes(x = body_mass_g)) + 
+  geom_histogram(, bins = 10)
+
+ggplot(penguin, 
+       aes(x = body_mass_g)) + 
+  geom_density()
+```
+
+```{r, echo = F}
+h <- ggplot(penguin, 
+       aes(x = body_mass_g)) + 
+  geom_histogram()
+
+d <- ggplot(penguin, 
+       aes(x = body_mass_g)) + 
+  geom_density()
+
+ggpubr::ggarrange(h, d)
+```
+
+To plot the density curve on top of the histogram, we have to change the scale of the y-axis on the histogram from a count to density. (**Note**: this trick comes from [Googling](http://www.sthda.com/english/wiki/ggplot2-density-plot-quick-start-guide-r-software-and-data-visualization) and is not something you would be expected to figure out on your own!)
+
+```{r, message = F}
+ggplot(penguin, 
+       aes(x = body_mass_g, y = ..density..)) + 
+  geom_histogram() + 
+  geom_density()
+```
+
+# Changing how layers are visualized 
+
+When you add multiple layers to a ggplot, you can change how each of them is visualized by adding arguments inside the GEOM_FUNCTION(). For example, to make your histogram transparent and lump data into fewer bins, you can add `alpha` and `bins` arguments to `geom_histogram()`. To make your density curve red, you can add a `color` argument to `geom_density()`. All the possible arguments are on the Data Visualization cheat sheet.
+
+```{r, message = F}
+ggplot(penguin, 
+       aes(x = body_mass_g, y = ..density..)) + 
+  geom_histogram(alpha = 0.5, bins = 10) + 
+  geom_density(color = "red")
+```
+
+# Error bars 
+
+To add error bars to a scatterplot, we will first need to summarize the data using **`dplyr`**. Let's visualize mean flipper length of each species and a 95% confidence interval on the mean. (**Stats practice**: Explain what a 95% confidence interval of a mean represents)
+
+```{r}
+summ <- penguin %>% 
+  group_by(Species) %>% 
+  summarize(mean = mean(flipper_length_mm), # Sample mean
+            sd = sd(flipper_length_mm), # Sample standard deviation
+            n = n() # Sample size
+            ) %>% 
+  mutate(se = sd/sqrt(n), # standard error of the mean
+         lcl = mean - se*1.96, # lower CI bound
+         ucl = mean + se*1.96) # upper CI bound
+
+summ
+```
+
+To show the errorbars we will need to define `aes()` that are specific to `geom_errorbar()` (`ymin` and `ymax`). You can put these in the global `aes()` we've defined already, but more frequently you will see them in `geom_errorbar()` to make it clear what they're for. 
+
+```{r}
+ggplot(summ, 
+       aes(x = Species, y = mean)) + 
+  geom_point() + 
+  geom_errorbar(aes(ymin = lcl, ymax = ucl))
+```
+
+Notice the default width is not very attractive. To change the way the errorbars are displayed, add arguments to `geom_errorbar()` *outside* of `aes()`. Again, arguments are found by Googling or looking at the Data Visualization cheat sheet. 
+```{r}
+ggplot(summ, 
+       aes(x = Species, y = mean)) + 
+  geom_point() + 
+  geom_errorbar(aes(ymin = lcl, ymax = ucl), width = 0.1)
+```
+
+*Additional ideas*: if you want to make the x-axis labels not overlap, try Googling "ggplot word wrap x axis labels"
+
+# Facets 
+
+To visualize more factors in your data, you may want to split your plot into multiple plots based on a variable in your data. 
+
+### Facet wrap 
+
+The first way to do this is with `facet_wrap()`. This will create multiple plots and "wrap" them to the next row if you run out of space. 
+
+When using faceting, you will need to take an extra step to make sure **`ggplot`** knows that you are specifying a variable name. (*Why? No one knows*). The syntax is `facet_wrap(vars(<VARIABLE-NAME>))`
+
+```{r}
+ggplot(data = penguin,
+       mapping = aes(x = body_mass_g, 
+                     y = flipper_length_mm, 
+                     color = Species)) + 
+  geom_point() +
+  facet_wrap(vars(Sex))
+```
+
+
+### Facet grid 
+
+Another way to create multiple plots is with `facet_grid()`. You will define variables that create the rows and columns of a grid. 
+
+```{r}
+ggplot(data = penguin,
+       mapping = aes(x = body_mass_g, 
+                     y = flipper_length_mm)) + 
+  geom_point() +
+  facet_grid(rows = vars(Sex), 
+             cols = vars(Species))
+```
+
+
