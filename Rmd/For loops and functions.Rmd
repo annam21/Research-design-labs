@@ -1,0 +1,260 @@
+---
+title: "For loops and functions"
+author: "WILD 541"
+date: "10/13/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(here)
+penguin <- read_csv(here("data/penguins_clean.csv"))
+```
+
+# Learning objectives 
+    
+    - Explain how functions work on vectors in R
+    - Create vectors 3 ways 
+    - Compare and contrast "for" loops with vectorized functions
+    - Describe two situations when a "for" loop is useful
+    - Define the syntax of a "for" loop
+    - Initialize an object to save the output of a "for" loop
+    - Create a "for" loop using square bracket indexing
+    - Describe conditions when functions are useful
+    - Create function with no arguments, one argument, and multiple arguments
+    - Assign default values to create optional arguments 
+
+# Vectors 
+
+R is a vectorized language, which means if you feed a function a *vector* of values, it will do the same thing for each value. You have seen this when using `mutate()` to manipulate data. You feed the function a column and it does the same thing on each value of the column. Another way to show this is with vectors. 
+
+There are two common ways to create vectors in R. First, you can use `c()`. 
+```{r}
+myvector <- c(5.6, 8, 9.9, 1.4, 4.2)
+myvector
+```
+
+You can also create vectors using `:`. This will create a sequence where each value is 1 more than the previous value. 
+```{r}
+1:3
+5:8
+-1:3
+```
+
+If you apply a function to a vector, it will do the same thing to each element. For example, let's add 2 to each point of `myvector`. In this case, the function is "add 2" and it is applied to every value of the vector. 
+```{r}
+myvector + 2
+```
+
+# For loops
+
+Another way to do this calculation is with a "for" loop. We will access each element of the vector one by one and add 2 to it to get the same answer. 
+
+The syntax of a "for" loop is 
+
+```{r, eval = F}
+for(<VARIABLE> in <VECTOR>){
+  <BODY>
+}
+```
+
+Usually to use a "for" loop we create an empty object to save our results in. This is called *initializing* an object. We can initialize a vector using a third way of creating vectors, the function `rep()`, which *repeats* values a certain number of times. 
+
+```{r}
+rslt <- rep(NA, times = length(myvector))
+rslt
+```
+
+Now let's build our "for" loop. We will use the variable `i` because that's what you see most often, but it can be called anything you want (`t`, `x`, `year`, etc.). 
+
+We will *index* our result using square brackets `[]` and our variable `i`. This says for the `i`th element of `myvector`, we want to add 2 and save the result in the `i`th element of `rslt`. 
+
+```{r}
+for(i in 1:length(myvector)){
+  rslt[i] <- myvector[i] + 2
+}
+rslt
+```
+
+This is called a loop because it ran 5 times. The first time, `i` was 1, the second time `i` was 2, and so on until `i` took on every value of the vector `1:length(myvector)`. 
+
+That's a lot more work for the same result! If you can do a task on vectors, it's much easier. But sometimes there is no way to do it with a vector, and a "for" loop is the solution. Here are two times when "for" loops are very useful. 
+
+### Current value depends on previous value 
+
+When your current value depends on a previous value, you will need to use a "for" loop. This is common in survival simulations, where it's important to know if your animal was alive or dead at the last time step (to avoid zombie animals coming back to life). 
+
+Here is an example where we want to start with the number 3 and create a vector where every element is 2 times the previous element. 
+```{r}
+out <- rep(NA, 6)
+out
+out[1] <- 3
+out 
+for(i in 2:6){
+  out[i] <- out[i-1] * 2
+}
+out
+```
+
+### >1 dimension
+
+When you are doing more complicated analyses with more than one dimension, you can use *nested* "for" loops. 
+
+For instance, if we want to simulate observations of plant height at 3 different plots on 4 different occasions, we could create a matrix with 3 rows and 4 columns. This is a *wide* dataset, which is not ideal for **`dplyr`** but can be useful for certain analyses.
+```{r}
+ht <- matrix(NA, nrow = 3, ncol = 4)
+ht
+for(site in 1:3){
+  for(occ in 1:4){
+    ht[site, occ] <- rnorm(1, 5, 1.1)
+  }
+}
+ht
+```
+We will talk more about random number generation soon, but for now know that `rnorm(1, 5, 1.1)` creates a single random number from a normal distribution with a mean of 5 and a standard deviation of 1.1 which were picked arbitrarily for this example.
+
+In this example, we used two "for" loops - one inside of the other. We named two variables (site and occ) inside the loops, and we *indexed* our result matrix using square brackets `[row,col]`. 
+
+This loop ran 12 times (3x4). The first iteration, `site` was 1 and `occ` was 1. Then `site` was 1 and `occ` was 2. Once it completed `site` 1 and `occ` 4, it went to `site` 2 and `occ` 1. In this way it systematically completed each combination of `site` and `occ`. 
+
+```{r, echo = F}
+tidyr::crossing(
+  site = 1:3,
+  occ = 1:4
+) %>% 
+  mutate(iteration = 1:n()) %>% 
+  select(iteration, site, occ) %>% 
+  knitr::kable() %>% 
+  kableExtra::kable_styling(full_width = F)
+```
+
+# Functions 
+
+Another important tool for iterating (doing the same thing over and over with different inputs) in R is to write functions. 
+
+We have used a number of functions in R, like `mean()`, `read_csv()` and `ggplot()`. Functions can be recognized by their parentheses `()`.
+
+### Why use functions? 
+
+Functions are useful whenever you are doing a task over and over. Any time you find yourself copying and pasting code, think **function time**! 
+
+Here's an example using the penguin data. Say we want to find the range of flipper length for each species on each island and we don't know how to use `group_by()` and `summarize()` from **`dplyr`**. We might do it piece-by-piece by defining a dataset for each combination of species and island, then taking the maximum flipper length minus the minimum flipper length. Can you find 3 mistakes in the code? 
+
+```{r}
+adelie_biscoe <- penguin %>% 
+  filter(Species == "Adelie Penguin (Pygoscelis adeliae)",
+         Island == "Biscoe")
+adelie_biscoe_range <- max(adelie_biscoe$flipper_length_mm) -
+  min(adelie_biscoe$flipper_length_mm)
+
+adelie_dream <- penguin %>% 
+  filter(Species == "Adelie Penguin (Pygoscelis adeliae)",
+         Island == "Dream")
+adelie_biscoe_range <- max(adelie_dream$flipper_length_mm) -
+  min(adelie_dream$flipper_length_mm)
+
+adelie_torgersen <- penguin %>% 
+  filter(Species == "Adelie Penguin (Pygoscelis adeliae)",
+         Island == "Dream")
+adelie_torgersen_range <- max(adelie_torgersen$flipper_length_mm) -
+  min(adelie_dream$flipper_length_mm)
+
+```
+Instead of copying and pasting code, we could create a function that 1) filters our dataset to the species and island we want then 2) takes the max - min of flipper length on that dataset and returns the value to us. 
+
+### Building functions 
+
+You can build your own function using the function `function()`. To build your own function, the syntax is 
+```{r, eval = F}
+<NAME> <- function(<ARGUMENTS>){
+  <BODY>
+  return(<VALUE>)
+}
+
+```
+
+Functions can be simple or very complex. For complex functions, you will often see the `return` statement, and for very simple functions it is often left off. We will start with functions that don't need a `return` statement. 
+
+### No arguments 
+
+You can build a function with no arguments that does the same thing every time. 
+```{r}
+expon <- function(){
+  2^4
+}
+```
+
+Once you have written your function, you need to run the code in the Console to create an object called `expon`. In your Environment pane, you will see `expon` now exists and can be used. 
+
+Now that you've written your function and it exists in your Environment for you to use, you can use it just like any other function in R. You can *call* (run) it by 
+
+```{r}
+expon()
+```
+
+Notice because we didn't specify any arguments in the function, we don't have to put any arguments inside the parentheses. We have no way to change the output of this function - it does the same thing every time. 
+
+### One argument 
+
+You can build a function with one argument so you can change the input every time.
+```{r}
+expon <- function(x){
+  x^4
+}
+expon(3)
+expon(4)
+```
+
+Note that this will return an error if you don't supply a value for the argument `x`
+```{r, eval = F}
+expon() # Error
+```
+
+### Two or more arguments
+
+You can build a function with multiple arguments so you can change multiple things every time you run it
+```{r}
+expon <- function(x, y){
+  x^y
+}
+expon(2,3)
+expon(3,2)
+```
+
+Again, note that if you don't provide an input for each argument, you will get an error
+```{r, eval = F}
+# Errors 
+expon(4) 
+expon()
+```
+
+### Defaults 
+
+You can create default values for one or more of your arguments so if the user does not specify that argument, the default will be used. 
+
+```{r}
+expon <- function(x, y = 2){
+  x^y
+}
+expon(2,3)
+expon(2)
+```
+
+### Objects inside a function 
+
+One of the great things about using functions is that you can create objects *inside* a function that don't get put into your Environment. When you create objects in a function you should use the `return` statement. 
+
+```{r}
+myfn <- function(x, y){
+  tmp <- x + y
+  out <- tmp * 4
+  return(out)
+}
+```
+
+This function adds two inputs (`x` and `y`) and saves them in an object called `tmp` that lives **inside the function**. It then takes `tmp` and multiplies it by 4, then saves that in an object called `out` that also lives inside the function. When you call the function, notice that neither `tmp` nor `out` get put in your Environment pane. 
+```{r}
+myfn(3, 7)
+```
+

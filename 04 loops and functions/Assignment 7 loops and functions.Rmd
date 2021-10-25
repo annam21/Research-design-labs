@@ -1,0 +1,53 @@
+---
+title: "Assignment 7 loops and functions"
+author: "TBD"
+date: "TBD"
+output: html_document
+---
+
+# 1
+
+Create a vector named `my_dat` with 6 non-consecutive values of fake data.
+```{r}
+
+```
+
+# 2 
+
+Write a "for" loop that multiplies each element of `my_dat` by 3 and store the results in a vector called `result` (hint: you will need to initialize `result` first). Call `result` to display your results. 
+```{r}
+
+```
+
+# 3
+
+Start with the vector provided. Write a "for" loop that overwrites the NAs with the one-half the previous value. Call the vector to display your results.
+```{r}
+vec <- c(18, rep(NA, 8))
+
+```
+
+# 4
+
+Write a function that takes an input called `x`. Let the function add 1 to `x` then multiply that number by 2. 
+```{r}
+
+```
+
+# 5
+
+Write a function that takes inputs called `sd` and `n` that outputs `sd` divided by the square root of `n` (this is the calculation for standard error). Give your argument `n` a default value of 30. 
+```{r}
+
+```
+
+# 6
+
+Use your function from #5 to calculate the standard error of a sample with a standard deviation of 2.4 and a sample size of 18.
+```{r}
+
+```
+
+# Final steps 
+
+Make sure your name and date are correct in the header. Run spellcheck, then knit this document. Email the knitted HTML to paul.lukacs@umontana.edu.
