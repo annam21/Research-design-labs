@@ -1,0 +1,281 @@
+---
+title: "Random number generation"
+author: "WILD 541"
+date: "10/13/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(here)
+penguin <- read_csv(here("data/penguins_clean.csv"))
+```
+
+# Learning objectives 
+- Describe the key characteristics of the normal, Bernoulli, and Poisson distributions
+- Simulate random numbers from a named distribution in R
+- Transform data using logarithmic, exponential, and logit transformations
+- Define all the parts of a linear model 
+- Distinguish between a linear model and a generalized linear model
+- use `lm()` to run a linear model 
+- Use `glm()` to run a generalized linear model
+
+# Distributions
+
+To simulate data, we often draw random numbers from a defined distribution. Different distributions are used for different things. Some distributions are continuous, meaning the numbers drawn can take on any value within a specified range, including fractions. These are good for modeling continuous phenomena, like weights or lengths. Some distributions are discrete, and numbers drawn will only take on integer values. These are good for modeling counts, like the number of animals that survive or are born. 
+
+"Named" distributions are commonly used distributions that have well-established properties. We know their assumptions and use them commonly to model particular processes. Three important named distributions are the Normal, Binomial, and Poisson distributions. 
+
+Each distribution is defined by certain *parameters*. The values of the parameters tell you everything about the shape of the distribution. For example, the parameters of the normal distribution are the mean and standard deviation. If you know the values of those two things, you can draw the normal curve.  
+
+There are built-in functions in R to work with named distributions. Each named distribution has `d`, `p`, `q`, and `r` functions. For example, the Normal distribution has `dnorm`, `pnorm`, `qnorm`, and `rnorm`. We are going to work most with the `r` functions, which draw *random* values from a specified distribution and are used to simulate data. 
+
+### Normal
+
+The normal distribution is the familiar bell-shaped curve, and it is continuous. The normal distribution is the most commonly used distribution because a surprising amount of things fall into this pattern. The normal distribution can be used for simulating weights, heights, and sampling distributions.  
+
+To simulate numbers from a normal distribution, we will use the built-in function `rnorm()` (again, "r" for "random"). The three arguments of `rnorm()` are 
+
+  - `n` the number of data points you want to create 
+  - `mean` the mean of the normal distribution you want to draw from
+  - `sd` the standard deviation of the normal distribution you want to draw from
+    
+You can read more details about each of these by typing `?rnorm` in the console.
+
+To simulate 10 realizations (AKA "draws" or "random values") of a normal distribution with a mean of 11 and a standard deviation of 1.4, we would use
+```{r}
+rnorm(n = 10, mean = 11, sd = 1.4)
+```
+
+We can visualize the data with a histogram and investigate the data with statistics
+```{r}
+x <- rnorm(10, mean = 11, sd = 1.4)
+hist(x)
+mean(x)
+sd(x)
+```
+Since we only drew 10 values, the histogram and statistics don't show exactly the numbers we started with. If we increase our sample size to, say, 1000, we get much closer. 
+
+```{r}
+x <- rnorm(1000, mean = 11, sd = 1.4)
+hist(x)
+mean(x)
+sd(x)
+```
+
+### Bernoulli
+
+The Bernoulli distribution gives us yes/no data, based on some probability. This is a discrete distribution since the only possible outcomes are 1 or 0. The Bernoulli distribution is used for simulating survival data and occupancy.
+
+We can simulate Bernoulli data (1s and 0s) using the function `rbinom()` because the Bernoulli is a special case of the binomial distribution. The arguments to `rbinom()` are 
+    
+  - `n` The number of data points you want to create
+  - `size` The number of trials in a binomial distribution. For a Bernoulli, this is always 1. 
+  - `prob` The probability of success
+    
+To simulate survival (1 if it survives, 0 if it dies) of 10 animals on a single occasion if they all have a survival probability of 0.9, we would use 
+
+```{r}
+rbinom(n = 10, size = 1, prob = 0.9)
+```
+Since the Bernoulli is a discrete distribution, a histogram is not the best visualization tool. A better option is a bar chart. Here is a barchart for 1000 draws from a Bernoulli with *p* = 0.9.
+```{r, echo = F}
+bern <- tibble::tibble(x = rbinom(n = 1000, size = 1, prob = 0.9))
+ggplot(bern, aes(x = x))+
+  geom_bar() + 
+  theme_classic() +
+  scale_x_continuous(breaks = c(0, 1))
+```
+
+```{r}
+x <- tibble::tibble(x = rpois(1000, 3.1)) 
+ggplot(x, aes(x = x))+
+  geom_bar() + 
+  theme_classic()
+```
+
+### Poisson 
+
+The Poisson distribution is one of several named distributions that is used to simulate counts (e.g., clutch size, abundance, the number of emails you receive each day). The Poisson distribution returns whole numbers (0, 1, 2, ...) so it is a discrete distribution. 
+
+To simulate Poisson count data, use the function `rpois()`. The arguments are
+    
+  - `n` The number of data points you want to create
+  - `lambda` The mean count
+
+```{r}
+rpois(n = 10, lambda = 3.1)
+```
+Like the Bernoulli, the Poisson is a discrete distribution, so a bar chart is the best method to visualize the data. Here is a bar chart of 1000 draws from a Poisson with $\lambda$ = 3.1. 
+
+```{r, echo = F}
+x <- tibble::tibble(x = rpois(1000, 3.1)) 
+ggplot(x, aes(x = x))+
+  geom_bar() + 
+  theme_classic()
+```
+
+# Transformations 
+
+It is common to transform data from one scale to another when we have specific simulation or analysis needs. Transformations are used when data don't meet specific assumptions or when it's computationally easier to simulate data from a distribution that's different from the one needed for our analysis. 
+
+### Logarithmic
+
+The "log" transformation replaces each value of $x$ with $\log(x)$. The log transformation works on data with values that are greater than 0. To be more precise, the log transformation takes values that are on the scale $(0, \infty)$ and changes them to the scale $(-\infty, \infty)$.
+
+The log transformation is sometimes used because it removes skewness in certain datasets. 
+
+```{r, echo = F}
+par(mfrow = c(1,2))
+x <- rlnorm(200)
+hist(x, freq = F, main = "x", xlab = NULL)
+y <- log(x)
+hist(y, freq = F, main = "log(x)", xlab = NULL, ylab = NULL)
+```
+
+To perform a log transformation in R, use the function `log()`. This function computes natural logarithms ($\ln(x)$) by default, but you can change the base if needed. You will see the $\ln$ used much more frequently than base 10 in ecology. 
+
+```{r}
+x <- c(2.2, 10, 1.1, 0.005)
+log(x)
+```
+
+### Exponential
+
+The exponential transformation replaces each value of $x$ with $e^x$. The exponential transformation takes values on the scale $(-\infty, \infty)$ and changes them to the scale $(0, \infty)$. In other words, it changes scales in the opposite way of the log transformation. 
+
+The exponential transformation is used commonly in ecology because it forces your data to be positive numbers. This is especially helpful if you don't want to simulate a negative number of eggs laid or animals in a population. 
+
+```{r, echo = F}
+x <- rnorm(1000)
+par(mfrow = c(1,2))
+hist(x, freq = F, main = "x", xlab = NULL)
+hist(exp(x), freq = F, main = "exp(x)", xlab = NULL, ylab = NULL)
+```
+
+
+In R, exponential transformation uses the function `exp()`. 
+```{r}
+x <- rnorm(5, 0, 1)
+exp(x)
+```
+
+### Logit
+
+The logit transformation replaces values of $x$ with $\log(\frac{x}{1-x})$. It takes values on the scale $(-\infty, \infty)$ and changes them to the scale $(0, 1)$.
+
+```{r, echo = F}
+x <- rnorm(1000)
+y <- plogis(x)
+par(mfrow = c(1,2))
+hist(x, freq = F, main = "x", xlab = NULL)
+hist(y, freq = F, main = "logit(x)", xlab = NULL, ylab = NULL)
+```
+
+The logit transformation is particularly useful when simulating probabilities, which can only go from 0 to 1. In R, the logit transformation is achieved with the function `plogis()`.
+
+```{r}
+x <- rnorm(20, 0, 1)
+plogis(x)
+```
+
+# Linear models 
+
+Linear models are used to find the relationship(s) between 2 or more variables when the response variable is normally distributed. 
+
+The general form of a linear model is $Y_i = \beta_0 + \beta_1 X_{1i} + \cdots +\beta_n X_{ni} + \epsilon_i$, where:
+
+- $Y_i$ is the value of the response variable for observation (row) *i*
+- $\beta_0$ is the intercept, or the value of the response variable if the value of each of the independent variables is 0
+- $X_n$ is the value of an independent variable, or covariate, for observation *i*
+- $\beta_n$ is the *effect* of that independent variable on the response variable
+- $\epsilon_i$ is the residual, or error, between each point and the model line. 
+    
+In linear models, the error is assumed to be normally distributed. This means that if you were to create a histogram of the distance from every data point to the model line, it would be normally distributed. 
+
+The function in R for a linear model is `lm()`. The syntax of `lm()` is 
+```{r, eval = F}
+lm(<RESPONSE> ~ <INDEPENDENT VARIABLE 1> + <INDEPENDENT VARIABLE 2>, data = <DATA NAME>)
+
+```
+
+We can use a linear model (AKA linear regression) to find the relationship between body mass and flipper length in our penguin dataset. 
+```{r}
+m1 <- lm(flipper_length_mm ~ body_mass_g, data = penguin)
+summary(m1)
+```
+```{r, echo = F}
+ggplot(penguin, aes(body_mass_g, flipper_length_mm)) + 
+  geom_point() + 
+  geom_smooth(method = "lm") + 
+  theme_classic()
+```
+
+
+If we want to account for species in our linear model, we can add it as a term in the linear model 
+```{r}
+m1 <- lm(flipper_length_mm ~ body_mass_g + Species, data = penguin)
+summary(m1)
+```
+
+The results can be plotted like this
+
+```{r, echo = F}
+ggplot(penguin, aes(body_mass_g, flipper_length_mm, color = Species)) + 
+  geom_point() + 
+  geom_smooth(method = "lm") + 
+  theme_classic()
+```
+
+If your response variable is *not* normally distributed, you can use a *generalized linear model* or glm. The function `glm()` works much the same as `lm()`, but you will need to identify the distribution that your response data come from using the `family` argument. 
+
+Let's say we want to predict whether a penguin individual is male or female from a distance, based on its body size.  First, I will need to change our data from "male" and "female" to 0 and 1. 
+```{r}
+p2 <- penguin %>% 
+  mutate(Sex = case_when(
+    Sex == "MALE" ~ 0,
+    Sex == "FEMALE" ~ 1
+  ))
+glm(Sex ~ body_mass_g, data = p2, family = "binomial")
+```
+```{r, echo = F}
+ggplot(p2, aes(x = body_mass_g, y = Sex)) + 
+  geom_point() + 
+  stat_smooth(method = "glm", 
+              method.args = list(family = binomial), 
+              se = F) + 
+  theme_classic() + 
+  scale_y_continuous(breaks = c(0,1))
+```
+
+
+# Advanced work with distributions
+
+Each of distributions we've looked at so far have related functions that start with 'd', 'p', 'q' and 'r'. We've already looked at the functions beginning with 'r', so let's look at the other functions. 
+
+The functions starting with 'd' like `dnorm()` give the value from the probability density function (pdf). 
+
+The pdf is easier to interpret using discrete distributions. If you have a distribution in mind and want to know what the probability of drawing a particular number from it is, you would use the 'd' function and get back a probability. For continuous distributions, the probability of drawing any number *exactly* is 0, but you can think of it in generally the same way. If we want to know what the probability of drawing *approximately* 9 is from a normal distribution with mean 11 and sd 1.4, use
+```{r}
+dnorm(9, mean = 11, sd = 1.4)
+```
+
+We used the pdf when creating density plots over histograms. You can hand-draw the density plot of a distribution if you compute the pdf at a range of points.
+
+```{r}
+a <- seq(7, 15, by = 0.01)
+b <- dnorm(a, mean = 11, sd = 1.4)
+plot(a, b)
+```
+
+Functions starting with 'p' like `pnorm()` give the value from the cumulative distribution function. If you have a data point (say, 9) and want to know what percentile it falls in, use 
+```{r}
+pnorm(9, mean = 11, sd = 1.4)
+```
+This shows that 9 is the 7.6th percentile of this distribution. 
+
+Functions starting with 'q' like `qnorm()` give the quantile function, which is the inverse of the cumulative distribution function (`pnorm()`). If you have a distribution in mind and want to know where the 75th quantile would be, use 
+```{r}
+qnorm(p = 0.75, mean = 11, sd = 1.4)
+```
